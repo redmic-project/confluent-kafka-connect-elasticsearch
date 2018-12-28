@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>io.confluent</groupId>
-    <artifactId>kafka-connect-elasticsearch</artifactId>
+    <artifactId>geojson-kafka-connect-elasticsearch</artifactId>
     <packaging>jar</packaging>
     <name>kafka-connect-elasticsearch</name>
     <organization>
@@ -229,7 +229,7 @@
                 <executions>
                     <execution>
                         <id>validate</id>
-                        <phase>validate</phase>
+                        <phase>none</phase>
                         <configuration>
                             <suppressionsLocation>checkstyle/suppressions.xml</suppressionsLocation>
                         </configuration>

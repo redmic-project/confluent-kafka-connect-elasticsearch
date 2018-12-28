@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ElasticsearchSinkConnector extends SinkConnector {
+public class GeoJsonElasticsearchSinkConnector extends SinkConnector {
 
   private Map<String, String> configProperties;
 
