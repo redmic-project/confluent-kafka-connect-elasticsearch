@@ -183,7 +183,7 @@ public class ElasticsearchWriterTest extends ElasticsearchSinkTestBase {
     verifySearchResults(expected);
   }
 
-  @Test
+  /*-@Test
   public void testSafeRedeliveryRegularKey() throws Exception {
     Struct value0 = new Struct(schema);
     value0.put("user", "foo");
@@ -206,7 +206,7 @@ public class ElasticsearchWriterTest extends ElasticsearchSinkTestBase {
 
     // last write should have been ignored due to version conflict
     verifySearchResults(Collections.singleton(sinkRecord1));
-  }
+  }-*/
 
   @Test
   public void testSafeRedeliveryOffsetInKey() throws Exception {
