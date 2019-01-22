@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GeoJsonElasticsearchSinkConnector extends SinkConnector {
+public class RedmicElasticsearchSinkConnector extends SinkConnector {
 
   private Map<String, String> configProperties;
 

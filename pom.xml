@@ -11,16 +11,11 @@
     </parent>
 
     <groupId>io.confluent</groupId>
-    <artifactId>geojson-kafka-connect-elasticsearch</artifactId>
+    <artifactId>redmic-kafka-connect-elasticsearch</artifactId>
     <packaging>jar</packaging>
-    <name>kafka-connect-elasticsearch</name>
-    <organization>
-        <name>Confluent, Inc.</name>
-        <url>http://confluent.io</url>
-    </organization>
-    <url>http://confluent.io</url>
+    <name>redmic-kafka-connect-elasticsearch</name>
     <description>
-        Elasticsearch Sink Connector for Kafka Connect
+        Elasticsearch Sink Connector for Kafka Connect in Redmic platform
     </description>
 
     <licenses>
