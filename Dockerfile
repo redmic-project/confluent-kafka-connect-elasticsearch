@@ -2,6 +2,8 @@ FROM registry.gitlab.com/redmic-project/docker/kafka-connector-builder:latest AS
 
 FROM maven:3.5.2-jdk-8
 
+LABEL maintainer="info@redmic.es"
+
 COPY --from=builder /root/.m2 /root/.m2
 
 RUN mkdir -p /build
