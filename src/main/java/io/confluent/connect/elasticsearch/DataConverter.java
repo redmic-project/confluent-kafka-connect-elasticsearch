@@ -175,6 +175,8 @@ public class DataConverter {
 				index = index + "-" + indexSuffix;
 		}
 
+		System.out.println(".---------- Guardando en " + index);
+
 		final Long version = ignoreKey ? null : 0L;// record.kafkaOffset();
 
 		return new IndexableRecord(new Key(index, type, id), payload, version);
@@ -204,10 +206,15 @@ public class DataConverter {
 
 		Struct struct = (Struct) value;
 
-		if (schema.schema().field("properties") == null)
+		if (schema.schema().field("date") == null && schema.schema().field("properties") == null)
 			return null;
 
-		String date = struct.getStruct("properties").getString("date").toString();
+		String date = null;
+
+		if (schema.schema().field("date") != null)
+			date = struct.getString("date").toString();
+		else if (schema.schema().field("properties") != null)
+			date = struct.getStruct("properties").getString("date").toString();
 
 		if (date == null || !date.contains("T"))
 			return "";

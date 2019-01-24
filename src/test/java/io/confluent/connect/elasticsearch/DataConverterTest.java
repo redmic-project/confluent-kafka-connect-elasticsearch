@@ -262,6 +262,32 @@ public class DataConverterTest {
 	}
 
 	@Test
+	public void timeseries() {
+
+		Schema origSchema = SchemaBuilder.struct().field("date", Schema.INT64_SCHEMA)
+				.field("inserted", Schema.OPTIONAL_FLOAT64_SCHEMA).field("updated", Schema.OPTIONAL_FLOAT64_SCHEMA)
+				.build();
+
+		Schema preProcessedSchema = converter.preProcessSchema(origSchema);
+
+		assertNotEquals(origSchema, preProcessedSchema);
+
+		Struct result = (Struct) converter.preProcessValue(new Struct(origSchema).put("date", 1545986513L), origSchema,
+				preProcessedSchema);
+
+		Struct expected = new Struct(preProcessedSchema)
+				.put("date", new DateTime(1545986513, DateTimeZone.UTC).toString(DataConverter.dateFormat))
+				.put("inserted", result.getString("inserted")).put("updated", result.getString("updated"));
+
+		SinkRecord sinkRecord = new SinkRecord(topic, partition, Schema.STRING_SCHEMA, key, preProcessedSchema,
+				expected, offset);
+
+		IndexableRecord actualRecord = converter.convertRecord(sinkRecord, index, type, false, false);
+
+		assertEquals(expected, result);
+	}
+
+	@Test
 	public void optionalFieldsWithoutDefaults() {
 		// One primitive type should be enough
 		testOptionalFieldWithoutDefault(SchemaBuilder.bool());
