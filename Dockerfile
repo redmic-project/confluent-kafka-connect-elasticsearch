@@ -13,6 +13,8 @@ COPY src /build/src
 
 WORKDIR /build
 
+ARG TARGET_PATH=target/redmic-kafka-connect-elasticsearch-5.0.1-package/share/java/kafka-connect-elasticsearch
+
 RUN mvn package && \
-	mv /build/target/redmic-kafka-connect-elasticsearch-5.0.1-package/share/java/kafka-connect-elasticsearch /jar && \
+	mv /build/${TARGET_PATH}/*.jar /jar && \
 	rm /jar/guava-18.0.jar
