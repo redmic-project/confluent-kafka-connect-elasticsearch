@@ -175,8 +175,6 @@ public class DataConverter {
 				index = index + "-" + indexSuffix;
 		}
 
-		System.out.println(".---------- Guardando en " + index);
-
 		final Long version = ignoreKey ? null : 0L;// record.kafkaOffset();
 
 		return new IndexableRecord(new Key(index, type, id), payload, version);
