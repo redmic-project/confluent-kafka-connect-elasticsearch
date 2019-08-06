@@ -48,6 +48,7 @@ import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.storage.Converter;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -66,6 +67,9 @@ public class DataConverter {
 
 	private final boolean useCompactMapEntries;
 	private final BehaviorOnNullValues behaviorOnNullValues;
+
+	// TODO: pasar en la config del conector
+	private final String rollOverSuffixPattern = "yyyy-MM";
 
 	/**
 	 * Create a DataConverter, specifying how map entries with string keys within
@@ -191,7 +195,7 @@ public class DataConverter {
 
 		Object value = ignoreSchema ? record.value() : preProcessValue(record.value(), record.valueSchema(), schema);
 
-		if (value instanceof Struct)
+		if (value instanceof Struct) // Comprobar si existe config para activar rollover
 			result.put(INDEX_SUFFIX_KEY, getRollOverSuffix(schema, value));
 
 		byte[] rawJsonPayload = JSON_CONVERTER.fromConnectData(record.topic(), schema, value);
@@ -207,16 +211,19 @@ public class DataConverter {
 		if (schema.schema().field("date") == null && schema.schema().field("properties") == null)
 			return null;
 
-		String date = null;
+		String dateTimeString = null;
 
 		if (schema.schema().field("date") != null)
-			date = struct.getString("date").toString();
+			dateTimeString = struct.getString("date").toString();
 		else if (schema.schema().field("properties") != null)
-			date = struct.getStruct("properties").getString("date").toString();
+			dateTimeString = struct.getStruct("properties").getString("date").toString();
 
-		if (date == null || !date.contains("T"))
+		if (dateTimeString == null)
 			return "";
-		return date.split("T")[0];
+
+		DateTime dateTime = DateTimeFormat.forPattern(dateFormat).parseDateTime(dateTimeString);
+
+		return dateTime.toString(DateTimeFormat.forPattern(rollOverSuffixPattern));
 	}
 
 	// We need to pre process the Kafka Connect schema before converting to JSON as

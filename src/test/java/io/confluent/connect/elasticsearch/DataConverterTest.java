@@ -39,6 +39,7 @@ import org.apache.kafka.connect.errors.DataException;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -275,14 +276,23 @@ public class DataConverterTest {
 		Struct result = (Struct) converter.preProcessValue(new Struct(origSchema).put("date", 1545986513L), origSchema,
 				preProcessedSchema);
 
-		Struct expected = new Struct(preProcessedSchema)
-				.put("date", new DateTime(1545986513, DateTimeZone.UTC).toString(DataConverter.dateFormat))
+		DateTime dateTime = new DateTime(1545986513, DateTimeZone.UTC);
+
+		Struct expected = new Struct(preProcessedSchema).put("date", dateTime.toString(DataConverter.dateFormat))
 				.put("inserted", result.getString("inserted")).put("updated", result.getString("updated"));
 
 		SinkRecord sinkRecord = new SinkRecord(topic, partition, Schema.STRING_SCHEMA, key, preProcessedSchema,
 				expected, offset);
 
 		IndexableRecord actualRecord = converter.convertRecord(sinkRecord, index, type, false, false);
+
+		String indexActualRecord = actualRecord.key.index;
+
+		// TODO: pasar en la config del conector
+		String rollOverSuffixPattern = "yyyy-MM";
+		String indexExpected = index + "-" + dateTime.toString(DateTimeFormat.forPattern(rollOverSuffixPattern));
+
+		assertEquals(indexExpected, indexActualRecord);
 
 		assertEquals(expected, result);
 	}
